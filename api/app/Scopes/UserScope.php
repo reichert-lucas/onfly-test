@@ -7,14 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
 use Illuminate\Support\Facades\Auth;
 
-class SystemScope implements Scope
+class UserScope implements Scope
 {
     public function apply(Builder $builder, Model $model): void
     {
-        $systemId = Auth::user()?->system_id;
+        $userId = Auth::user()?->id;
 
-        if (!$systemId) return;
+        if (!$userId) return;
 
-        $builder->where($model->getTable() . '.system_id', $systemId);
+        $builder->where($model->getTable() . '.user_id', $userId);
     }
 }

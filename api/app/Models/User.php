@@ -41,6 +41,11 @@ class User extends Authenticatable
         return $this->belongsTo(System::class);
     }
 
+    public function travelOrders()
+    {
+        return $this->hasMany(TravelOrder::class);
+    }
+
     static public function search(array $filters): Builder
     {
         $query = self::query();

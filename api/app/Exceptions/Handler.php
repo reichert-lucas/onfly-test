@@ -42,7 +42,7 @@ class Handler extends ExceptionHandler
 
         if ($e instanceof AuthenticationException) {
             return new JsonResponse([
-                'message' => 'Não autorizado.'
+                'message' => $e->getMessage() ?: 'Não autorizado.'
             ], 401);
         }
         

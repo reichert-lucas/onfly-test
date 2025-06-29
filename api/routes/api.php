@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\SystemController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\Admin\SystemController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\User\TravelOrderController as UserTravelOrderController;
+use App\Http\Controllers\Admin\TravelOrderController as AdminTravelOrderController;
 use App\Http\Middleware\IsAdminMiddleware;
 use App\Http\Middleware\IsSuperAdminMiddleware;
 use Illuminate\Support\Facades\Route;
@@ -32,7 +34,6 @@ Route::group([
     ], function () {
         Route::group([
             'prefix' => 'auth',
-            'middleware' => 'auth:sanctum',
             'as' => 'auth.'
         ], function () {
             Route::post('logout', [AuthController::class, 'logout'])->name('logout');
@@ -43,9 +44,29 @@ Route::group([
         });
 
         Route::resource('users', UserController::class)->middleware([
-            'auth:sanctum',
             IsAdminMiddleware::class
         ]);
+
+        Route::group([
+            'prefix' => 'users',
+            'as' => 'users.'
+        ], function () {
+            Route::get('travel-orders', [UserTravelOrderController::class, 'index'])->name('index');
+            Route::post('travel-orders', [UserTravelOrderController::class, 'store'])->name('store');
+            Route::get('travel-orders/{order}', [UserTravelOrderController::class, 'show'])->name('show');
+        });
+
+        Route::group([
+            'prefix' => 'admins',
+            'as' => 'admins.',
+            'middleware' => [
+                IsAdminMiddleware::class
+            ]
+        ], function () {
+            Route::get('travel-orders', [AdminTravelOrderController::class, 'index'])->name('index');
+            Route::get('travel-orders/{order}', [AdminTravelOrderController::class, 'show'])->name('show');
+            Route::put('travel-orders/{order}/change-status', [AdminTravelOrderController::class, 'changeStatus'])->name('change-status');
+        });
     });
 });
 
