@@ -1,0 +1,56 @@
+version: "3.5"
+
+networks: 
+  app-network:
+    driver: bridge
+
+services:
+  api:
+    container_name: 'onfly-api'
+    build: ./api
+    ports: 
+      - "8000:8000"
+    volumes:
+      - ./api:/var/www
+    networks: 
+      - app-network
+    depends_on:
+      - mysql
+  mysql:
+    container_name: 'onfly-mysql'
+    image: mysql
+    ports: 
+      - "3306:3306"
+    volumes:
+      - .docker/dbdata:/var/lib/mysql
+    environment: 
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_DATABASE: 'onfly'
+      MYSQL_PASSWORD: 'root'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    networks: 
+      - app-network
+  phpmyadmin:
+    container_name: 'onfly-phpmyadmin'
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - PMA_ARBITRARY=1
+      - MYSQL_PASSWORD='root'
+      - MYSQL_ROOT_PASSWORD='root'
+    ports:
+      - "8081:80"
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+  front:
+    container_name: 'onfly-front'
+    build: ./front
+    ports: 
+      - "3000:3000"
+    volumes:
+      - ./front/:/var/www
+    networks: 
+      - app-network
+    depends_on:
+      - api
