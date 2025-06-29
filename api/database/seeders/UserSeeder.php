@@ -40,7 +40,7 @@ class UserSeeder extends Seeder
         User::updateOrCreate(
             ['email' => 'test@user.com'],
             [
-                'name' => 'Test Admin',
+                'name' => 'Test User',
                 'is_admin' => false,
                 'system_id' => SystemEnum::TESTS->value,
                 'password' => Hash::make(env('DEFAULT_PASSWORD')),

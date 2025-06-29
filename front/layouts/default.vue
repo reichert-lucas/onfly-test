@@ -1,7 +1,5 @@
 <template>
   <v-app :theme="dark ? 'dark' : 'light'">
-    <modals-payment-modal :key="`blank-payment-${$route.name}`" />
-
     <v-layout class="rounded rounded-md">
       <v-app-bar>
         <v-app-bar-nav-icon 
@@ -161,18 +159,23 @@ export default {
 
   computed: {
     menuItems() {
-      return [
+      const items = [
         {
-          name: 'Início',
-          icon: 'mdi-home',
+          name: 'Dashboard',
+          icon: 'mdi-airplane',
           route: 'index',
-        },
-        {
+        }
+      ];
+
+      if (this.user.is_admin || this.user.is_super_admin) {
+        items.push({
           name: 'Usuários',
           icon: 'mdi-account-multiple',
           route: 'users',
-        }
-      ];
+        });
+      }
+
+      return items;
     }
   },
 

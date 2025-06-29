@@ -14,8 +14,8 @@ class TravelOrderResource extends JsonResource
             'applicant' => new SimpleUserResource($this->user),
             'status' => new TravelOrderStatusResource($this->status),
             'destination' => $this->destination,
-            'departure_date' => $this->departure_date->format('d-m-Y'),
-            'return_date' => $this->return_date->format('d-m-Y'),
+            'departure_date' => $this->departure_date->format('d/m/Y'),
+            'return_date' => $this->return_date->format('d/m/Y'),
         ];
     }
 }

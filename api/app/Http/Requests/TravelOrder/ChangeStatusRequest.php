@@ -19,7 +19,7 @@ class ChangeStatusRequest extends FormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            $order = $this->getOrder($this->route('order'));
+            $order = $this->getOrder(intval($this->route('order')));
             
             if ($order->user_id === $this->user()->id) {
                 $validator->errors()->add('status_id', 'Você não pode alterar o status de uma ordem criada por você mesmo.');

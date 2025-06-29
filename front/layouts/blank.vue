@@ -1,7 +1,5 @@
 <template>
   <v-app :theme="dark ? 'dark' : 'light'">
-    <modals-payment-modal :key="`blank-payment-${$route.name}`"/>
-
     <v-layout class="rounded rounded-md">
       <v-app-bar>
         <v-toolbar-title>

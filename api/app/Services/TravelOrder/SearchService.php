@@ -12,6 +12,8 @@ class SearchService extends Service
     {
         $query->join('users', 'users.id', '=', 'travel_orders.user_id');
 
+        $query->select('travel_orders.*');
+
         self::applyIfInArray($filters, 'search', function (string $search) use ($query) {
             $query->where(function ($query) use ($search) {
                 $search = strtolower($search);
@@ -33,6 +35,8 @@ class SearchService extends Service
         self::applyIfInArray($filters, 'return_date', function (string $returnDate) use ($query) {
             $query->whereDate('travel_orders.return_date', '>=', $returnDate); 
         });
+
+        $query->orderBy('travel_orders.updated_at', 'desc');
 
         return $query;
     }

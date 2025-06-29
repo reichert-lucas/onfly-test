@@ -37,7 +37,6 @@ export const useLoginStore = defineStore('login', {
 
       this.token = token
       this.user = JSON.parse(user)
-
       return true;
     },
 

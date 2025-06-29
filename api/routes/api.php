@@ -43,10 +43,6 @@ Route::group([
             Route::post('refresh', [AuthController::class, 'refresh'])->name('refresh');
         });
 
-        Route::resource('users', UserController::class)->middleware([
-            IsAdminMiddleware::class
-        ]);
-
         Route::group([
             'prefix' => 'users',
             'as' => 'users.'
@@ -65,8 +61,12 @@ Route::group([
         ], function () {
             Route::get('travel-orders', [AdminTravelOrderController::class, 'index'])->name('index');
             Route::get('travel-orders/{order}', [AdminTravelOrderController::class, 'show'])->name('show');
-            Route::put('travel-orders/{order}/change-status', [AdminTravelOrderController::class, 'changeStatus'])->name('change-status');
+            Route::patch('travel-orders/{order}/change-status', [AdminTravelOrderController::class, 'changeStatus'])->name('change-status');
         });
+
+        Route::resource('users', UserController::class)->middleware([
+            IsAdminMiddleware::class
+        ]);
     });
 });
 
