@@ -5,15 +5,16 @@ namespace App\Http\Controllers\User;
 use App\Enum\TravelOrderStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TravelOrder\StoreRequest;
+use App\Http\Requests\User\SearchRequest;
 use App\Http\Resources\TravelOrderResource;
 use App\Models\TravelOrder;
 
 class TravelOrderController extends Controller
 {
-    public function index()
+    public function index(SearchRequest $request)
     {
         return TravelOrderResource::collection(
-            TravelOrder::paginate(10)
+            TravelOrder::search($request->validated())->paginate(10)
         );
     }
 

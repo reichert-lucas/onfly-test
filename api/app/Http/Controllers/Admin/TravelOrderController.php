@@ -4,16 +4,19 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TravelOrder\ChangeStatusRequest;
+use App\Http\Requests\TravelOrder\SearchRequest;
 use App\Http\Resources\TravelOrderResource;
 use App\Models\TravelOrder;
 use App\Scopes\UserScope;
 
 class TravelOrderController extends Controller
 {
-    public function index()
+    public function index(SearchRequest $request)
     {
         return TravelOrderResource::collection(
-            TravelOrder::withoutGlobalScope(UserScope::class)->paginate(10)
+            TravelOrder::search($request->validated())
+                ->withoutGlobalScope(UserScope::class)
+                ->paginate(10)
         );
     }
 
@@ -27,7 +30,7 @@ class TravelOrderController extends Controller
     public function changeStatus(ChangeStatusRequest $request, int $order)
     {
         $order = $request->getOrder($order);
-        
+
         $order->travel_order_status_id = $request->status_id;
         $order->save();
 

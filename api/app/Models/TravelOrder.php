@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-use App\Traits\UseSystemScope;
+use Illuminate\Database\Eloquent\Builder;
+use App\Services\TravelOrder\SearchService;
 use App\Traits\UseUserAndSystemScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -45,5 +46,14 @@ class TravelOrder extends Model
     public function status(): BelongsTo
     {
         return $this->belongsTo(TravelOrderStatus::class, 'travel_order_status_id');
+    }
+
+    static public function search(array $filters): Builder
+    {
+        $query = self::query();
+
+        SearchService::search($filters, $query);
+
+        return $query;
     }
 }
