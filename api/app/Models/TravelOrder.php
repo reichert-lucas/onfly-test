@@ -33,11 +33,6 @@ class TravelOrder extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function approvedBy(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'approved_by');
-    }
-
     public function system(): BelongsTo
     {
         return $this->belongsTo(System::class);

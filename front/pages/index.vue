@@ -68,8 +68,16 @@
                                     style="cursor: pointer"
                                 >
                                     <span>{{ order.status?.name || 'Pendente' }}</span>
+                                    <v-progress-circular
+                                        v-if="changingStatus[order.id]"
+                                        indeterminate
+                                        size="16"
+                                        width="2"
+                                        color="white"
+                                        class="ml-2"
+                                    />
                                     <v-icon
-                                        v-if="getStatusAvailableList(order.status?.id).length && order.applicant.id !== user().id"
+                                        v-else-if="getStatusAvailableList(order.status?.id).length && order.applicant.id !== user().id"
                                         class="ml-2"
                                         style="font-size:16px;"
                                         icon="mdi-sync"
@@ -81,7 +89,7 @@
                                     v-for="status in getStatusAvailableList(order.status?.id)"
                                     :key="status.id"
                                     @click="changeStatus(order.id, status.value)"
-                                    :disabled="order.status?.id === status.value"
+                                    :disabled="order.status?.id === status.value || changingStatus[order.id]"
                                 >
                                     <v-list-item-title>
                                         <v-chip
@@ -158,6 +166,7 @@ export default {
             page: 1,
             query: null,
             showForm: false,
+            changingStatus: []
         }
     },
 
@@ -200,6 +209,8 @@ export default {
         },
 
         changeStatus(orderId, newStatus) {
+            this.changingStatus[orderId] = true;
+
             api().patch(`admins/travel-orders/${orderId}/change-status`, {
                 status_id: newStatus
             })
@@ -209,6 +220,9 @@ export default {
                 })
                 .catch((error) => {
                     toast().error(getMessageError(error));
+                })
+                .finally(() => {
+                    this.changingStatus[orderId] = false;
                 })
         },
 

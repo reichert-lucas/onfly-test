@@ -6,8 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\TravelOrder\ChangeStatusRequest;
 use App\Http\Requests\TravelOrder\SearchRequest;
 use App\Http\Resources\TravelOrderResource;
+use App\Mail\StatusChangedMessage;
 use App\Models\TravelOrder;
 use App\Scopes\UserScope;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class TravelOrderController extends Controller
 {
@@ -29,10 +33,28 @@ class TravelOrderController extends Controller
 
     public function changeStatus(ChangeStatusRequest $request, int $order)
     {
-        $order = $request->getOrder($order);
+        try {
+            DB::beginTransaction();
 
-        $order->travel_order_status_id = $request->status_id;
-        $order->save();
+            $order = $request->getOrder($order);
+    
+            $order->travel_order_status_id = $request->status_id;
+            $order->save();
+
+            $user = $order->user;
+            
+            Mail::to($user->email)
+                ->queue(new StatusChangedMessage(
+                    $user->name,
+                    $request->status_id
+                ));
+
+            DB::commit();
+        } catch(\Exception $e) {
+            DB::rollBack();
+            
+            return throw $e;
+        }
 
         return response()->json(new TravelOrderResource($order));
     }

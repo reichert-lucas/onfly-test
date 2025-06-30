@@ -147,7 +147,7 @@ const save = handleSubmit(values => {
         return_date: formatDateForAPI(values.return_date)
     };
 
-    api().post(`${user().is_admin ? 'admins' : 'users'}/travel-orders`, formData)
+    api().post('users/travel-orders', formData)
         .then(() => {
             emit('close');
             emit('refreshOrders');

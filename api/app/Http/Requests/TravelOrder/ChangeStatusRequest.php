@@ -47,6 +47,8 @@ class ChangeStatusRequest extends FormRequest
 
     public function getOrder(int $orderId): TravelOrder
     {
-        return TravelOrder::withoutGlobalScope(UserScope::class)->findOrFail($orderId);
+        return TravelOrder::withoutGlobalScope(UserScope::class)
+            ->with('user')
+            ->findOrFail($orderId);
     }
 }
