@@ -27,7 +27,7 @@
 ### Passos para Execução
 ```bash
 # 1. Clone o repositório
-git clone <url-do-repositorio>
+git clone https://github.com/reichert-lucas/onfly-test.git
 cd onfly-test
 
 # 2. Execute com Docker Compose
