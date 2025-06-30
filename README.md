@@ -118,8 +118,14 @@ Deve ser adicionado os dados de algum servidor de e-mails para que seja possíve
 #### Exemplo da tela de pedidos com os botões de alteração de pedido. Vale salientar, que para os botões aparecer o usuário deve estar logado com um usuário administrador, além disso, ele não pode ter realizado o pedido (deve ser um pedido de outro usuário). 
 ![Email de Cancelamento](prints/change-status.png)
 
+#### Exemplo de tema light
+![Email de Aprovação](prints/orders-light.png)
+
 #### Exemplo de Filtragem de Pedidos
 👉 [Assista ao vídeo no YouTube](https://www.youtube.com/watch?v=UDnNbQG2_gU)---
+
+#### Exemplo de Alteração de Status com E-mail
+👉 [Assista ao vídeo no YouTube](https://www.youtube.com/watch?v=r8WH5HdACMA)---
 
 ### 4. Usuários Criados Automaticamente
 
