@@ -17,14 +17,14 @@
             </v-btn>
         </div>
 
-        <div class="d-flex align-center justify-space-between mb-4">
+        <div class="d-flex align-center justify-space-between mb-2">
             <v-text-field
                 variant="underlined"
                 :color="dark ? 'white' : 'blue'"
                 label="Buscar pedido..."
                 append-icon="mdi-magnify"
                 @keydown.enter="search(true)"
-                v-model="query"
+                v-model="filters.search"
             >
                 <template v-slot:loader>
                     <v-progress-linear
@@ -35,6 +35,55 @@
                     />
                 </template> 
             </v-text-field>
+        </div>
+
+        <div class="d-flex align-center justify-space-between mb-0 flex-wrap">
+            <v-text-field
+                class="ma-1"
+                label="Data de ida (inicial)"
+                type="text"
+                v-maska:[dateMask]
+                v-model="departureDate"
+                placeholder="DD/MM/AAAA"
+            />
+
+            <v-text-field
+                v-if="departureDate && departureDate.length >= 10"
+                class="ma-1"
+                label="Data de retorno (final)"
+                type="text"
+                v-maska:[dateMask]
+                v-model="returnDate"
+                placeholder="DD/MM/AAAA"
+            />
+        </div>
+
+        <div class="d-flex align-center justify-space-between mb-0 flex-wrap">
+            <v-select
+                class="ma-1"
+                label="Status"
+                item-title="label"
+                item-value="value"
+                :items="ORDER_STATUS_OPTIONS"
+                v-model="filters.status_id"
+                @input="search(true)"
+            />
+        </div>
+
+
+        <div class="d-flex align-center justify-space-between mb-8 flex-wrap">
+            <v-btn
+                @click="search(true)"
+                :loading="loading"
+                prepend-icon="mdi-magnify"
+                block
+                color="blue"
+                class="text-white text-weight-bold"
+                style="color:white;"
+                :elevation="8"
+            >
+                <b>Consultar</b>
+            </v-btn>
         </div>
 
         <div v-if="orders.length">
@@ -154,7 +203,7 @@
 
 <script>
 import ChangeTheme from '@/mixins/ChangeTheme.vue'
-import { ORDER_STATUS_OPTIONS_WITHOUT_NULL, ORDER_STATUS } from '@/constants/order-status'
+import { ORDER_STATUS_OPTIONS, ORDER_STATUS_OPTIONS_WITHOUT_NULL, ORDER_STATUS } from '@/constants/order-status'
 
 export default {
     mixins: [ ChangeTheme ],
@@ -164,9 +213,18 @@ export default {
             loading: false,
             orders: [],
             page: 1,
-            query: null,
             showForm: false,
-            changingStatus: []
+            changingStatus: [],
+            filters: {
+                search: null,
+                departure_date: null,
+                return_date: null,
+                status_id: null,
+            },
+            departureDate: null,
+            returnDate: null,
+            dateMask: { mask: '##/##/####' },
+            ORDER_STATUS_OPTIONS
         }
     },
 
@@ -175,16 +233,24 @@ export default {
     },
 
     methods: {
+        formatDateForAPI(dateString) {
+            if (!dateString) return null;
+
+            const [day, month, year] = dateString.split('/');
+            return `${year}-${month}-${day}`;
+        },
+
         search(resetPagination = false){
             this.loading = true
 
-            if (resetPagination) this.page = 1 
+            if (resetPagination) this.page = 1;
+
+            this.filters.page = this.page;
+            this.filters.departure_date = this.formatDateForAPI(this.departureDate);
+            this.filters.return_date = this.formatDateForAPI(this.returnDate);
 
             api().get(`${user().is_admin || user().is_super_admin ? 'admins' : 'users'}/travel-orders`, {
-                params: { 
-                    page: this.page,
-                    search: this.query
-                }
+                params: this.filters
             })
                 .then(res => {
                     this.orders = res.data.data
