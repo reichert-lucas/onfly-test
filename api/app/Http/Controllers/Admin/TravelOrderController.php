@@ -10,7 +10,6 @@ use App\Mail\StatusChangedMessage;
 use App\Models\TravelOrder;
 use App\Scopes\UserScope;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class TravelOrderController extends Controller
