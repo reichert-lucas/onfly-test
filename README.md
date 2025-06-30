@@ -88,23 +88,58 @@ NUXT_PUBLIC_API_BASE_URL=http://localhost:8000/api
 ### 2. Configuração do Banco de Dados
 ```bash
 # Execute as migrações
-docker compose exec api php artisan migrate
+docker docker exec onfly-api php artisan migrate
 
 # Execute os seeders (opcional)
-docker compose exec api php artisan db:seed
+docker docker exec onfly-api php artisan db:seed
 ```
 
+
+### 3. Configuração do Servidor de Email
+
+#### Configuração do Mailtrap (Desenvolvimento)
+
+Deve ser adicionado os dados de algum servidor de e-mails para que seja possível o disparo de e-mails com a notificação de alteração de status de pedidos.
+
+
+#### Exemplo de E-mail de Aprovação
+![Email de Aprovação](prints/email.png)
+
+#### Exemplo da tela de pedidos com os botões de alteração de pedido. Vale salientar, que para os botões aparecer o usuário deve estar logado com um usuário administrador, além disso, ele não pode ter realizado o pedido (deve ser um pedido de outro usuário). 
+![Email de Cancelamento](prints/change-status.png)
+
 ---
+
+### 4. Usuários Criados Automaticamente
+
+O sistema cria automaticamente alguns usuários para facilitar os testes:
+
+#### Usuários Administradores
+- **Super Admin:**
+  - Email: `super@admin.com`
+  - Senha: `password`
+  - Permissões: Acesso total aos sistemas
+
+- **Admin:**
+  - Email: `test@admin.com`
+  - Senha: `password`
+  - Permissões: Gerenciamento de pedidos de viagem dos usuários do sistema, e dos usuários do sistema.
+
+#### Usuários Comuns
+- **Usuário Teste:**
+  - Email: `test@user.com`
+  - Senha: `password`
+  - Permissões: Criar e visualizar próprios pedidos
 
 ## 🧪 Testes
 
 ### Executar Testes do Backend
 ```bash
 # Todos os testes
-docker compose exec api php artisan test
+docker docker exec onfly-api php artisan test
 
 # Testes específicos
-docker compose exec api php artisan test --filter=AuthTest
+docker docker exec onfly-api php artisan test --filter=AuthTest
 ```
 
 ### Cobertura de Testes
@@ -116,44 +151,37 @@ docker compose exec api php artisan test --filter=AuthTest
 
 ## 📚 Documentação da API
 
-### Endpoints Principais
+### Documentação Postman
+A documentação completa das rotas da API está disponível através da **Collection do Postman** localizada no diretório principal do projeto:
 
-#### 🔐 Autenticação
-```http
-POST /api/auth/login
-POST /api/auth/logout
-GET  /api/auth/user
-```
+📁 **`postman-documentation.json`**
 
-#### 👥 Usuários
-```http
-GET    /api/users
-POST   /api/users
-GET    /api/users/{id}
-PUT    /api/users/{id}
-DELETE /api/users/{id}
-```
+Esta collection contém todas as rotas da API organizadas por funcionalidade:
+- 🔐 **Autenticação** - Login, logout e gerenciamento de tokens
+- 👥 **Usuários** - CRUD de usuários e perfis
+- 🏢 **Sistemas** - Gerenciamento de sistemas e escopos
+- ✈️ **Pedidos de Viagem** - Criação, consulta e alteração de status
 
-#### 🏢 Sistemas
-```http
-GET /api/systems
-GET /api/systems/{id}
-```
+**Como usar:**
+1. Importe o arquivo `.json` no Postman
+2. Configure as variáveis de ambiente (base_url, token)
+3. Teste as rotas diretamente na interface do Postman
+4. Ao efetuar login, o token já é adicionado nas variáveis de ambiente, ou seja, basta executar as outras rotas 👍
 
 ---
 
 ## 🎯 Funcionalidades
 
 ### 🔐 Sistema de Autenticação
-- **Login/Logout** com JWT
+- **Login/Logout**
 - **Proteção de rotas** por middleware
 - **Diferentes níveis** de acesso (usuário, admin, super admin)
+- **Proteção por Global Scopes** fazendo com que usuários só vejam as coisas que são deles, ou de seus sistemas.
 
 ### 👥 Gestão de Usuários
 - **CRUD completo** de usuários
 - **Busca e filtros** avançados
 - **Validação** de dados
-- **Upload de fotos** de perfil
 
 ### 🏢 Gestão de Sistemas
 - **Múltiplos sistemas** por usuário
